@@ -14,10 +14,6 @@ It is the only place where all modules are wired together; every other file is a
 
 ## 2. `data_loading/csv_dataset_loader.py`
 
-### `__init__(filepath)`
-Stores the path to the CSV file that will be read later.
-No I/O happens here; the object is just configured and ready.
-
 ### `load()`
 Opens the CSV, skips the header line, and splits each row into a mileage value and a price value.
 Returns two parallel lists of floats — `mileages` and `prices` — that feed the rest of the pipeline.

@@ -21,7 +21,21 @@ def main() -> None:
     dataset_file = sys.argv[1] if len(sys.argv) > 1 else _DEFAULT_DATASET
 
     loader = CsvDatasetLoader(dataset_file)
-    mileages, prices = loader.load()
+    try:
+        mileages, prices = loader.load()
+    except OSError as exc:
+        print(f"Error: cannot read dataset '{dataset_file}': {exc.strerror}", file=sys.stderr)
+        sys.exit(1)
+    except ValueError:
+        print(f"Error: dataset '{dataset_file}' contains non-numeric values.", file=sys.stderr)
+        sys.exit(1)
+
+    if len(mileages) < 2:
+        print("Error: dataset must contain at least two rows.", file=sys.stderr)
+        sys.exit(1)
+    if min(mileages) == max(mileages) or min(prices) == max(prices):
+        print("Error: dataset has no variance, cannot train.", file=sys.stderr)
+        sys.exit(1)
 
     mileage_normalizer = MinMaxFeatureNormalizer(mileages)
     price_normalizer = MinMaxFeatureNormalizer(prices)
